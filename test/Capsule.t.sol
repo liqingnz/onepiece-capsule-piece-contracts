@@ -17,10 +17,9 @@ contract CapsuleTest is Test {
     function setUp() public virtual {
         // deploy mock OFT
         uint256 startTime = block.timestamp + 10 minutes;
-        capsule = new Capsule(startTime, TOKEN_URI);
+        capsule = new Capsule(startTime);
 
-        vm.prank(admin);
-        capsule.initialize("OnePiece Capsule", "OC");
+        capsule.initialize(admin, "OnePiece Capsule", "OC", TOKEN_URI);
 
         assertEq(capsule.startTime(), startTime);
         assertEq(capsule.tokenURI(0), TOKEN_URI);

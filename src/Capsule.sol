@@ -17,17 +17,19 @@ contract Capsule is ERC721EnumerableUpgradeable, OwnableUpgradeable {
     uint256 public immutable startTime;
     mapping(address => bool) public hasMinted;
 
-    constructor(uint256 _startTime, string memory _uri) {
+    constructor(uint256 _startTime) {
         startTime = _startTime;
-        _tokenURI = _uri;
     }
 
     function initialize(
+        address _owner,
         string memory _name,
-        string memory _symbol
+        string memory _symbol,
+        string memory _uri
     ) external initializer {
         __ERC721_init(_name, _symbol);
-        __Ownable_init(msg.sender);
+        __Ownable_init(_owner);
+        _tokenURI = _uri;
     }
 
     function tokenURI(uint256) public view override returns (string memory) {
