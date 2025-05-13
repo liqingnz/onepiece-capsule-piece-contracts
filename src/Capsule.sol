@@ -9,26 +9,28 @@ contract Capsule is ERC721EnumerableUpgradeable, OwnableUpgradeable {
     event BatchMint(address user, uint256 startTokenId, uint256 amount);
     event WithdrawFunds();
 
-    uint256 public constant MINT_TIME_PERIOD = 1 days;
+    uint256 public constant MINT_TIME_PERIOD = 30 days;
 
     string private _tokenURI;
     uint256 private _nextTokenId;
 
-    uint256 public immutable startTime;
+    uint256 public startTime;
     mapping(address => bool) public hasMinted;
 
-    constructor(uint256 _startTime) {
-        startTime = _startTime;
+    constructor() {
+        _disableInitializers();
     }
 
     function initialize(
         address _owner,
+        uint256 _startTime,
         string memory _name,
         string memory _symbol,
         string memory _uri
     ) external initializer {
         __ERC721_init(_name, _symbol);
         __Ownable_init(_owner);
+        startTime = _startTime;
         _tokenURI = _uri;
     }
 
@@ -38,6 +40,10 @@ contract Capsule is ERC721EnumerableUpgradeable, OwnableUpgradeable {
 
     function getNextTokenId() external view returns (uint256) {
         return _nextTokenId;
+    }
+
+    function setStartTime(uint256 _startTime) external onlyOwner {
+        startTime = _startTime;
     }
 
     // mint for all users

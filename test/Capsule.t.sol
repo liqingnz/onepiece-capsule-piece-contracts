@@ -4,6 +4,7 @@ import {Test} from "forge-std/Test.sol";
 import {console} from "forge-std/console.sol";
 
 import {Capsule} from "../src/Capsule.sol";
+import {UniProxy} from "../src/UniProxy.sol";
 
 contract CapsuleTest is Test {
     string public constant TOKEN_URI = "TOKEN_URI";
@@ -12,14 +13,23 @@ contract CapsuleTest is Test {
 
     address public msgSender = address(1);
     address public admin = address(2);
+    address public proxyAdmin = address(3);
     uint256 public startTime;
 
     function setUp() public virtual {
         // deploy mock OFT
         uint256 startTime = block.timestamp + 10 minutes;
-        capsule = new Capsule(startTime);
+        capsule = new Capsule();
+        UniProxy proxy = new UniProxy(address(capsule), proxyAdmin, "");
+        capsule = Capsule(payable(proxy));
 
-        capsule.initialize(admin, "OnePiece Capsule", "OC", TOKEN_URI);
+        capsule.initialize(
+            admin,
+            startTime,
+            "OnePiece Capsule",
+            "OC",
+            TOKEN_URI
+        );
 
         assertEq(capsule.startTime(), startTime);
         assertEq(capsule.tokenURI(0), TOKEN_URI);
